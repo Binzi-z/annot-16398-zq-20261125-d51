@@ -1,0 +1,74 @@
+{
+  "total_pages": 100000,
+  "page_payload": 384,
+  "batch_pages": 13000,
+  "n_batches": 8,
+  "overlap": 16,
+  "budget_cap": 8388608,
+  "elapsed_s": 15.419,
+  "pages_per_s": 6485.7,
+  "total_peak_bytes": 7270055,
+  "total_peak_at_batch": 5,
+  "pool_peaks": [
+    {
+      "pool": "compressed_input",
+      "peak_bytes": 52,
+      "peak_at_batch": 0,
+      "peak_at_page": 13000
+    },
+    {
+      "pool": "decompression_arena",
+      "peak_bytes": 32768,
+      "peak_at_batch": 0,
+      "peak_at_page": 13000
+    },
+    {
+      "pool": "index_queue",
+      "peak_bytes": 7253646,
+      "peak_at_batch": 0,
+      "peak_at_page": 13000
+    },
+    {
+      "pool": "pending_pages",
+      "peak_bytes": 7253646,
+      "peak_at_batch": 0,
+      "peak_at_page": 13000
+    },
+    {
+      "pool": "retry_held",
+      "peak_bytes": 0,
+      "peak_at_batch": 0,
+      "peak_at_page": 0
+    }
+  ],
+  "tracemalloc_peak": 7889509,
+  "budget_never_exceeded": true,
+  "duplicate_merges": 576,
+  "reclaim_schedule": [
+    "COMPRESSED: charged when a page's wire bytes are read; released the instant that page is decompressed (per page, never accumulates).",
+    "ARENA: charged in <=arena_chunk steps as the page expands; unused chunk slack returned immediately; nets to zero once the page is decompressed and transferred to the batch.",
+    "PENDING_PAGES: owns each decoded page until the batch is validated; moved (not freed) onward after validation.",
+    "INDEX_QUEUE: owns all pages of a validated batch through indexing and commit; released right after the COMMIT pointer is durable and the batch is published to the index.",
+    "RETRY_HELD: owns a validated batch's pages across a transient commit failure and its backoff; returned to INDEX_QUEUE after the retry and released to zero once the batch finally commits or fails."
+  ],
+  "worst_interleaving": {
+    "overlap_pages_per_batch": 16,
+    "busiest_pool": "index_queue",
+    "busiest_pool_peak_bytes": 7253646,
+    "peak_batch_index": 5,
+    "peak_batch_pending_estimate": 7072000,
+    "cap_utilisation_pct": 86.67,
+    "two_producers_concurrent": {
+      "max_compressed_held": 448,
+      "max_arena_held": 32768,
+      "note": "both producers can each hold one compressed page and one arena chunk at the same instant; budget counts them independently"
+    },
+    "cap_pressure_check": {
+      "oversized_batch_approved": false,
+      "batch_charge_bytes": 8652600,
+      "cap": 8388608,
+      "ledger_zero_after_failure": true,
+      "peak_bytes_during_attempt": 8388165
+    }
+  }
+}
